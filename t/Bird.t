@@ -1,4 +1,4 @@
-package test::Sorter;
+package test::Bird;
 use strict;
 use warnings;
 use base qw(Test::Class);
@@ -28,7 +28,11 @@ sub birds : Tests{
     $b1->tweet('こんにちは');
     $b1->tweet('おやすみ');
 
-    diag explain $b1->friends_timeline->[0]->{message_body};
+    is $b1->friends_timeline->[0]->{message_body}, 'こんにちは';
+    is $b1->friends_timeline->[1]->{message_body}, 'こんばんは';
+    note explain $b1->friends_timeline->[0];
+    note explain $b1->friends_timeline;
+
     
 }
 
