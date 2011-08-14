@@ -32,8 +32,6 @@ sub birds : Tests{
     is $b1->friends_timeline->[1]->{message_body}, 'こんばんは';
     note explain $b1->friends_timeline->[0];
     note explain $b1->friends_timeline;
-
-    
 }
 
 __PACKAGE__->runtests;
