@@ -28,12 +28,21 @@ sub birds : Tests{
     $b1->tweet('こんにちは');
     $b1->tweet('おやすみ');
 
+    note "hello";
+
+    is $b1->friends_timeline->[0]->message, 'こんにちは';
     is $b1->friends_timeline->[0]->{message_body}, 'こんにちは';
+    is $b1->friends_timeline->[1]->message, 'こんばんは';
     is $b1->friends_timeline->[1]->{message_body}, 'こんばんは';
-    note explain $b1->friends_timeline->[0];
-    note explain $b1->friends_timeline;
+    diag explain $b1->friends_timeline->[0];
+    diag explain $b1->friends_timeline;
 }
 
 __PACKAGE__->runtests;
 
 1;
+
+
+
+
+
