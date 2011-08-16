@@ -34,8 +34,8 @@ sub birds : Tests{
     is $b1->friends_timeline->[0]->{message_body}, 'こんにちは';
     is $b1->friends_timeline->[1]->message, 'こんばんは';
     is $b1->friends_timeline->[1]->{message_body}, 'こんばんは';
-    diag explain $b1->friends_timeline->[0];
-    diag explain $b1->friends_timeline;
+    note explain $b1->friends_timeline->[0];
+    note explain $b1->friends_timeline;
 }
 
 __PACKAGE__->runtests;
