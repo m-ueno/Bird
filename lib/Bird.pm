@@ -33,17 +33,24 @@ sub tweet{
          user_name=>$self->{name}}
     ));
 }
+sub friends {
+    my ($self) = @_;
+    @{ $self->{friends} };
+}
 sub friends_timeline{
     my ($self) = @_;
     my @ret;
+    my ($head,$tail);
     # friendsのtweetsフィールドから$number_of~~だけずつとってくる。
     for my $friend ( @{$self->{friends}} ){
-        my $tail = @{ $friend->{tweets} } - 1;
-        my $head = $tail-$number_of_tweets_in_timeline>0 ? $_ : 0;
+        $tail = $#{$friend->{tweets}};
+        $head = $tail - $number_of_tweets_in_timeline>0 ?
+            $tail - $number_of_tweets_in_timeline :
+                0;
         push( @ret, @{ $friend->{tweets} }[$head .. $tail] );
     }
-    @ret = sort { $a->{message_id} <=> $b->{message_id} } @ret;
-    \@ret;
+    @ret = reverse sort { $a->{message_id} <=> $b->{message_id} } @ret;
+    [ @ret[0..$number_of_tweets_in_timeline] ];
 }
 # ----------------
 package Main;
