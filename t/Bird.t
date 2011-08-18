@@ -8,7 +8,7 @@ use Bird;
 sub init : Test(1) {
     new_ok 'Bird';
 }
-sub testeasy_birds : Tests{
+sub testeasy_birds : Test(2){
     my $b1 = Bird->new('ueno');
     my $b2 = Bird->new('konishi');
     my $b3 = Bird->new('yasugi');
@@ -31,11 +31,9 @@ sub testeasy_birds : Tests{
 
     is $b1->friends_timeline->[0]->message, 'こんばんは';
     is $b1->friends_timeline->[1]->message, 'こんにちは';
-    note explain $b1->friends_timeline->[0];
-    note explain $b1->friends_timeline;
 }
 
-sub test : Tests{
+sub test_friends_timeline : Test(5){
     my $b1 = Bird->new('ueno');
     my $b2 = Bird->new('konishi');
     my $b3 = Bird->new('yasugi');

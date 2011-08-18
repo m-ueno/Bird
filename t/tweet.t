@@ -8,14 +8,12 @@ use Bird;
 sub init : Test(1) {
     new_ok 'Tweet';
 }
-sub tweet : Test(4){
-    my $t=Tweet->new({message_id=>1192, message_body=>"hoho", user_name=>"masaru"});
+sub tweet : Tests{
+    my $t=Tweet->new( {bird => Bird->new('uenop'),
+                       message => "hello world"} );
 
-    is $t->message_id, 1192;
-    is $t->message_body, "hoho";
-    is $t->user_name, "masaru";
-
-    is $t->message, "hoho";             # alias
+    is $t->{bird}->{name}, "uenop";
+    is $t->message, "hello world";
 }
 
 __PACKAGE__->runtests;

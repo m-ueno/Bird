@@ -1,67 +1,40 @@
-package Tweet;
-use base qw(Class::Accessor::Fast);
-use strict;
-use warnings;
-__PACKAGE__->mk_accessors(qw(message_id message_body user_name));
-
-sub message{
-    my ($self) = @_;
-    $self->{message_body};
-}
-# ----------------
 package Bird;
 use strict;
 use warnings;
+use Tweet;
+use base qw(Class::Accessor::Fast);
 
-# class variable
-our $message_id=10000;
-our $number_of_tweets_in_timeline=5;
-
-sub new{
+__PACKAGE__->mk_accessors(qw(name following followers friends_timeline));
+my $number_of_tweets_in_timeline = 5;
+sub new {                               # Bird->new('jkondo')
     my ($class,$name) = @_;
-    bless {name=>$name, tweets=>[], friends=>[]}, $class;
+    bless { name => $name }, $class;
 }
+
 sub follow{
     my ($self, $bird) = @_;
-    push( @{$self->{friends}}, $bird );       # x
+    push( @{ $self->{following} }, $bird );
+    push( @{ $bird->{followers} }, $self );
+    $self;
 }
 sub tweet{
     my ($self,$str) = @_;
-    push( @{$self->{tweets}}, Tweet->new(
-        {message_id=>$message_id++,
-         message_body=>$str,
-         user_name=>$self->{name}}
-    ));
+    my $new_tweet = Tweet->new( {bird=>$self, message=>$str} );
+
+    unshift( @{$self->{tweets}}, $new_tweet );
+    for my $bird (@{ $self->{followers} }){
+        $bird->receive_tweet($new_tweet);
+    }
+    $new_tweet;
 }
-sub friends {
-    my ($self) = @_;
-    @{ $self->{friends} };
+sub receive_tweet{
+    my ($self, $new_tweet) = @_;
+    unshift( @{ $self->{friends_timeline} }, $new_tweet );
 }
 sub friends_timeline{
     my ($self) = @_;
-    my @ret;
-    my ($head,$tail);
-    # friendsのtweetsフィールドから$number_of~~だけずつとってくる。
-    for my $friend ( @{$self->{friends}} ){
-        $tail = $#{$friend->{tweets}};
-        $head = $tail - $number_of_tweets_in_timeline>0 ?
-            $tail - $number_of_tweets_in_timeline :
-                0;
-        push( @ret, @{ $friend->{tweets} }[$head .. $tail] );
-    }
-    @ret = reverse sort { $a->{message_id} <=> $b->{message_id} } @ret;
-    [ @ret[0..$number_of_tweets_in_timeline] ];
+    [ @{ $self->{friends_timeline} }[0..$number_of_tweets_in_timeline]];
 }
-# ----------------
-package Main;
-use strict;
-use warnings;
-use 5.10.0;
-use Data::Dumper;
-use Test::Class;
-local $Data::Dumper::Indent = 1;
-local $Data::Dumper::Purity = 1;
-local $Data::Dumper::Terse = 1;
 
 1;
 
